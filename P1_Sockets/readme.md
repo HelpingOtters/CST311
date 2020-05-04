@@ -20,7 +20,7 @@ Two Words HERE !!
 * Run the Client on the second terminal using the command: 
     * `python UDPClient.py`
 * In the terminal running the client type a sentence in all lower case letters followed by `Enter`
-
+### TCP
 **Need to add instructions for TCP sockets**
 
 ## Authors
