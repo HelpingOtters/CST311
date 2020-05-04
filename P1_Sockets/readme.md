@@ -13,14 +13,14 @@ Two Words HERE !!
 * Learn to create sockets using UDP
 
 ## To Run
-### UDP 
+### UDP Server/Client
 * Open two terminals in the folder containing the files
 * Run the Server first on the first terminal using the command:
     * `python UDPServer.py`
 * Run the Client on the second terminal using the command: 
     * `python UDPClient.py`
 * In the terminal running the client type a sentence in all lower case letters followed by `Enter`
-### TCP
+### TCP Server/Client
 **Need to add instructions for TCP sockets**
 
 ## Authors
