@@ -1,5 +1,5 @@
 # Programming assignments 
-## [Program 1 Sockets](/P1/)
+## [Program 1 Sockets](/P1_Sockets/)
 ### Objectives
 * Create server and client sockets
 * Learn to create sockets using TCP
