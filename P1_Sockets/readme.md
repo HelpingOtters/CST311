@@ -38,3 +38,9 @@ Two Words HERE !!
 ![UDP Screenshot Extra Credit](Screenshots/UDP_Screenshot_ec.png)
 #### TCP
 ![TCP Screenshot Extra Credit](Screenshots/TCP_Screenshot_ec.png)
+
+## Lab 1 Extra Credit Participants 
+Barbosa, Ricardo
+Halbert, Max
+Reynolds, Lindsey
+Sedano, Dan
