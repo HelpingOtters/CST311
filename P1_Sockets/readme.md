@@ -29,6 +29,12 @@ Two Words HERE !!
 * In the terminal running the client type a sentence in all lower case letters followed by `Enter`
 
 ## Screen Shots
-
+### UDP Client and Server Sample Run
 ![UDP Screenshot](Screenshots/UDP_Screenshot.png)
+### TCP Client and Server Sample Run
 # ![TCP Screenshot](Screenshots/TCP_Screenshot.png)
+### Extra Credit: Ran on Mininet on two seperate hosts
+#### UDP
+![UDP Screenshot Extra Credit](Screenshots/UDP_Screenshot_ec.png)
+#### TCP
+![TCP Screenshot Extra Credit](Screenshots/TCP_Screenshot_ec.png)
