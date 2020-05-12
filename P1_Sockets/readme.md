@@ -21,7 +21,14 @@ Two Words HERE !!
     * `python UDPClient.py`
 * In the terminal running the client type a sentence in all lower case letters followed by `Enter`
 ### Using TCP Protocol
-**Need to add instructions for TCP sockets**
+* Open two terminals in the folder containing the files
+* Run the Server first on the first terminal using the command:
+    * `python TCPServer.py`
+* Run the Client on the second terminal using the command: 
+    * `python TCPClient.py`
+* In the terminal running the client type a sentence in all lower case letters followed by `Enter`
 
-## Authors
-**Need to add the author for each file here**
+## Screen Shots
+
+![UDP Screenshot](Screenshots/UDP_Screenshot.png)
+# ![TCP Screenshot](Screenshots/TCP_Screenshot.png)
