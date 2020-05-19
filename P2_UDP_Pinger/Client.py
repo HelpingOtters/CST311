@@ -1,4 +1,3 @@
-@@ -0,0 +1,63 @@
 # Names: Ricardo Barbosa, Max Halbert, Lindsey Reynolds and Dan Sedano
 # Date: 05/26/20
 # Title: Client.py
