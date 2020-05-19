@@ -14,19 +14,23 @@ serverName = 'localhost'
 serverPort = 12000
 
 latency = [] # Holds the return times
-
-
-
-# --- Person 1 and 2 --- #
-# ADD code to...
-# Send 10 pings to the server in the specified format
-# Record start time
 message = "Ping" #input(' ')
 time_sent = 0.0
 time_rcvd = 0.0
 time_rtt = 0.0
-
+# --- Person 1 and 2 --- #
+# ADD code to...
+# Send 10 pings to the server in the specified format
+# Record start time
+# ADD code to...
+# Get the message from the server
+# Print a “Request timed out” error or print received message
+# Record return time
+# Sets the socket timeout timer
 # Creates 10 Pings
+
+
+
 for x in range(0,10):
 
     try:
@@ -35,11 +39,7 @@ for x in range(0,10):
         clientSocket.sendto(message.encode(), (serverName, serverPort))
         time_sent = time()
         #print('time_sent: ', time_sent)
-        # ADD code to...
-        # Get the message from the server
-        # Print a “Request timed out” error or print received message
-        # Record return time
-        # Sets the socket timeout timer
+       
         clientSocket.settimeout(1.0)
         modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
         time_rcvd = time()
