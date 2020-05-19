@@ -26,6 +26,7 @@ time_sent = 0.0
 time_rcvd = 0.0
 time_rtt = 0.0
 
+# Creates 10 Pings
 for x in range(0,10):
 
     try:
@@ -38,20 +39,21 @@ for x in range(0,10):
         # Get the message from the server
         # Print a “Request timed out” error or print received message
         # Record return time
+        # Sets the socket timeout timer
         clientSocket.settimeout(1.0)
         modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
         time_rcvd = time()
 
-        # print('time_rcvd: ', time_rcvd)
+        # Calculates the RTT (latency)
         time_rtt = (time_rcvd - time_sent)
-        # print('time_rtt: ', time_rtt)
+        # Adds latency to List
         latency.append(time_rtt)
         print(modifiedMessage.decode()) # Convert message into a string
         # Close the socket to end the process
         clientSocket.close()
+    # Catches the timeout exception    
     except timeout:
-        print('Timeout')
-        latency.append(0.0)
+        print('Request timed out')
         clientSocket.close()
  
    
