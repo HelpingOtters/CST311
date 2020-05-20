@@ -14,7 +14,7 @@ serverSocket = socket(AF_INET, SOCK_DGRAM)
 # Assign IP address and port number to socket
 serverSocket.bind(('', 12000))
 
-print("Waiting for Client....")
+print("Waiting for Client....\n")
 while True:
     # Generate random number in the range of 0 to 10
     rand = random.randint(0, 10)
@@ -27,8 +27,9 @@ while True:
 
     # If rand is less is than 4, we consider the packet lost and do not respond
     if rand < 4:
-        print("Packet was lost")
+        print("Packet was lost\n")
         continue
     # Otherwise, the server responds
-    print("Mesg sent: ", modifiedMessage)
     serverSocket.sendto(modifiedMessage.encode(), address)
+    print("Mesg sent: ", modifiedMessage)
+    print()

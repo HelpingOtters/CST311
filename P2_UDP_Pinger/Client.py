@@ -21,40 +21,45 @@ from decimal import Decimal
 serverName = 'localhost'
 serverPort = 12000
 
-# Create a UDP socket
-clientSocket = socket(AF_INET, SOCK_DGRAM)
-
-message = "Ping" 
+#message = "Ping" 
 time_sent = 0.0
 time_rcvd = 0.0
 time_rtt = 0.0
 arr_rtt = [] # Holds the return times
 
 # Creates 10 pings
-for x in range(0,10):
+for x in range(1,11):
     try:
+        # Create a UDP socket
+        clientSocket = socket(AF_INET, SOCK_DGRAM)  
+
         # Sends message to server
+        message = "Ping" + str(x)
         clientSocket.sendto(message.encode(), (serverName, serverPort))
         time_sent = time()
         clientSocket.settimeout(1)
-
+        print("Mesg sent:", message)
+        
         # Receives message from server
         modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
         time_rcvd = time()
-
+        
+        print("Mesg rcvd:", modifiedMessage.decode())
+        print("Start time:" "%.10E" % Decimal(time_sent))
+        print("Return time:", "%.10E" % Decimal(time_rcvd))
         # Calculates RTT (latency).
         time_rtt = (time_rcvd - time_sent)
-        print("PONG ", x, " RTT: ", "%.10E" % Decimal(time_rtt))
+        print("PONG", x, "RTT:", "%.10E" % Decimal(time_rtt), "ms\n")
         arr_rtt.append(time_rtt)
-
-        print(modifiedMessage.decode()) # Convert message into a string
+        # Close the socket to end the process
+        clientSocket.close()
 
     except timeout :
-        print("Request timed out")
+        print("No Mesg rcvd")
+        print("PONG",x,"Request Timed out\n")
         clientSocket.close()
     
-    # Close the socket to end the process
-    clientSocket.close()
+    
 
 # -----------------------------------------------------------------------------------------
 # --- Person 3 and 4 --- #
@@ -66,7 +71,7 @@ for x in range(0,10):
 
 
 
-for x in arr_rtt:
-    print('latency:' '%.2E' % Decimal(x))
+# for x in arr_rtt:
+#     print('latency:' '%.2E' % Decimal(x))
     
 
