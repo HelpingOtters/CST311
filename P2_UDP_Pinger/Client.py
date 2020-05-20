@@ -8,44 +8,53 @@ from socket import *
 from time import *
 from decimal import Decimal
 
-# Specify socket address
-serverName = 'localhost'
-serverPort = 12000
-
-latency = [0.0] # Holds the return times
-
-# Create a UDP socket
-clientSocket = socket(AF_INET, SOCK_DGRAM)
-
 # --- Person 1 and 2 --- #
 # ADD code to...
 # Send 10 pings to the server in the specified format
 # Record start time
-message = "Ping" #input(' ')
+# ADD code to...
+# Get the message from the server
+# Print a “Request timed out” error or print received message
+# Record return time
+
+# Specify socket address
+serverName = 'localhost'
+serverPort = 12000
+
+# Create a UDP socket
+clientSocket = socket(AF_INET, SOCK_DGRAM)
+
+message = "Ping" 
 time_sent = 0.0
 time_rcvd = 0.0
 time_rtt = 0.0
+arr_rtt = [] # Holds the return times
 
+# Creates 10 pings
 for x in range(0,10):
+    try:
+        # Sends message to server
+        clientSocket.sendto(message.encode(), (serverName, serverPort))
+        time_sent = time()
+        clientSocket.settimeout(1)
 
-    clientSocket.sendto(message.encode(), (serverName, serverPort))
-    time_sent = time()
-    #print('time_sent: ', time_sent)
-    # ADD code to...
-    # Get the message from the server
-    # Print a “Request timed out” error or print received message
-    # Record return time
-    modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
-    time_rcvd = time()
+        # Receives message from server
+        modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
+        time_rcvd = time()
 
-    # print('time_rcvd: ', time_rcvd)
-    time_rtt = (time_rcvd - time_sent)
-    # print('time_rtt: ', time_rtt)
-    latency.append(time_rtt)
+        # Calculates RTT (latency).
+        time_rtt = (time_rcvd - time_sent)
+        print("PONG ", x, " RTT: ", "%.10E" % Decimal(time_rtt))
+        arr_rtt.append(time_rtt)
 
-    print(modifiedMessage.decode()) # Convert message into a string
+        print(modifiedMessage.decode()) # Convert message into a string
 
-
+    except timeout :
+        print("Request timed out")
+        clientSocket.close()
+    
+    # Close the socket to end the process
+    clientSocket.close()
 
 # -----------------------------------------------------------------------------------------
 # --- Person 3 and 4 --- #
@@ -56,8 +65,8 @@ for x in range(0,10):
 # based on the RTT results.
 
 
-# Close the socket to end the process
-clientSocket.close()
 
-for x in latency:
+for x in arr_rtt:
     print('latency:' '%.2E' % Decimal(x))
+    
+
