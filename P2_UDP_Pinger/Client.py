@@ -13,7 +13,7 @@ from decimal import Decimal
 serverName = 'localhost'
 serverPort = 12000
 
-latency = [] # Holds the return times
+arr_RTT = [] # Holds the return times
 message = "Ping" #input(' ')
 time_sent = 0.0
 time_rcvd = 0.0
@@ -47,7 +47,7 @@ for x in range(0,10):
         # Calculates the RTT (latency)
         time_rtt = (time_rcvd - time_sent)
         # Adds latency to List
-        latency.append(time_rtt)
+        arr_RTT.append(time_rtt)
         print(modifiedMessage.decode()) # Convert message into a string
         # Close the socket to end the process
         clientSocket.close()
@@ -60,7 +60,7 @@ for x in range(0,10):
 
 
 
-# -----------------------------------------------------------------------------------------
+# ------------------------------------------------------------------------------
 # --- Person 3 and 4 --- #
 # Code to determine and print out the minimum, maximum, and average RTTs
 # of all pings from the client
@@ -70,5 +70,5 @@ for x in range(0,10):
 
 
 
-for x in latency:
+for x in arr_RTT:
     print(x , 'latency: '  '%.2E' % Decimal(x))
