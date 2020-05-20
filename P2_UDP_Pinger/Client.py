@@ -108,7 +108,7 @@ estimatedRTT = arr_rtt[0]
 devRTT = estimatedRTT/2
 
 print("For 1 EstimatedRTT: ", estimatedRTT)
-    print("DevRTT: ", devRTT)
+print("DevRTT: ", devRTT)
 
 # Get the Estimated RTT and Dev RTT
 for i in range(1, len(arr_rtt)):
