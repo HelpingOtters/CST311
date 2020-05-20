@@ -21,7 +21,6 @@ from decimal import Decimal
 serverName = 'localhost'
 serverPort = 12000
 
-#message = "Ping" 
 time_sent = 0.0
 time_rcvd = 0.0
 time_rtt = 0.0
@@ -36,25 +35,29 @@ for x in range(1,11):
         # Sends message to server
         message = "Ping" + str(x)
         clientSocket.sendto(message.encode(), (serverName, serverPort))
+        # Records the time when the packet was sent.
         time_sent = time()
+        # Sets the timeout time for the socket. In this case 1 second.
         clientSocket.settimeout(1)
         print("Mesg sent:", message)
         
         # Receives message from server
         modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
+        # Records the time when the message comes from the server.
         time_rcvd = time()
-        
-        print("Mesg rcvd:", modifiedMessage.decode())
-        print("Start time:" "%.10E" % Decimal(time_sent))
-        print("Return time:", "%.10E" % Decimal(time_rcvd))
-        # Calculates RTT (latency).
-        time_rtt = (time_rcvd - time_sent)
-        print("PONG", x, "RTT:", "%.10E" % Decimal(time_rtt), "ms\n")
+        # Calculates RTT (latency) in ms
+        time_rtt = (time_rcvd - time_sent) * 1000
         arr_rtt.append(time_rtt)
+
+        print("Mesg rcvd:", modifiedMessage.decode())
+        print("Start time:", "%.10e" % Decimal(time_sent))
+        print("Return time:", "%.10e" % Decimal(time_rcvd))
+        print("PONG", x, "RTT:", time_rtt, "ms\n")
+        
         # Close the socket to end the process
         clientSocket.close()
-
-    except timeout :
+    # Handles a timeout exception
+    except timeout:
         print("No Mesg rcvd")
         print("PONG",x,"Request Timed out\n")
         clientSocket.close()
@@ -72,6 +75,6 @@ for x in range(1,11):
 
 
 # for x in arr_rtt:
-#     print('latency:' '%.2E' % Decimal(x))
+#     print('latency:' '%.2e' % Decimal(x))
     
 
