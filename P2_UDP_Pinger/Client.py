@@ -77,12 +77,12 @@ for x in range(1,11):
 min_rtt = min(arr_rtt)
 max_rtt = max(arr_rtt)
 avg_rtt = 0 if len(arr_rtt) == 0 else sum(arr_rtt)/len(arr_rtt)
-packet_loss_rate = (10.0 - len(arr_rtt)) / 10;
+packet_loss_rate = (10.0 - len(arr_rtt)) * 100 / 10;
 
 print("Min RTT:\t", min_rtt, " ms");
 print("Max RTT:\t", max_rtt, " ms");
 print("Average RTT:\t", avg_rtt, " ms" );
-print("Packet Loss:\t", packet_loss_rate);
+print("Packet Loss:\t", packet_loss_rate, "%");
     
 
 
