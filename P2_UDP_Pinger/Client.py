@@ -27,6 +27,10 @@ time_rcvd = 0.0
 time_rtt = 0.0
 arr_rtt = [] # Holds the return times
 
+sum_rtt = 0.0   # total sum of RTT of returned pings
+num_pongs = 0   # number of returned pings
+min_rtt = 1000.0   # set the minimum of RTT to the maximum timout in milliseconds
+max_rtt = 0.0   # set the maximum of RTT to 0
 
 # Creates 10 pings
 for x in range(1,11):
@@ -50,6 +54,16 @@ for x in range(1,11):
         # Calculates RTT (latency) in ms
         time_rtt = (time_rcvd - time_sent) * 1000
         arr_rtt.append(time_rtt)
+        
+        # sum up the RTT of returned message, and update min and max of RTT
+        sum_rtt = sum_rtt + time_rtt
+        if (min_rtt > time_rtt):
+            min_rtt = time_rtt
+        if (max_rtt < time_rtt):
+            max_rtt = time_rtt
+		# increment the counter of pongs
+        num_pongs = num_pongs + 1    
+        
 
         print("Mesg rcvd:", modifiedMessage.decode())
         print("Start time:", "%.10e" % Decimal(time_sent))
@@ -74,10 +88,13 @@ for x in range(1,11):
 
 
 # Find and print the minimum and maximum from the arr_rtt[] and pacet loss rate
-min_rtt = min(arr_rtt)
-max_rtt = max(arr_rtt)
-avg_rtt = 0 if len(arr_rtt) == 0 else sum(arr_rtt)/len(arr_rtt)
-packet_loss_rate = (10.0 - len(arr_rtt)) * 100 / 10;
+#min_rtt = min(arr_rtt)
+#max_rtt = max(arr_rtt)
+#avg_rtt = 0 if len(arr_rtt) == 0 else sum(arr_rtt)/len(arr_rtt)
+#packet_loss_rate = (10.0 - len(arr_rtt)) * 100 / 10
+
+avg_rtt = sum_rtt / num_pongs
+packet_loss_rate = (10.0 - num_pongs) * 100 / 10
 
 print("Min RTT:\t", min_rtt, " ms");
 print("Max RTT:\t", max_rtt, " ms");
