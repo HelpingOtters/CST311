@@ -83,9 +83,32 @@ print("Min RTT:\t", min_rtt, " ms");
 print("Max RTT:\t", max_rtt, " ms");
 print("Average RTT:\t", avg_rtt, " ms" );
 print("Packet Loss:\t", packet_loss_rate, "%");
+
+a = .125
+B = .25
+
+estimatedRTT = arr_rtt[0]
+devRTT = estimatedRTT/2
+
+print("For 1 EstimatedRTT: ", estimatedRTT)
+    print("DevRTT: ", devRTT)
+
+# Get the Estimated RTT and Dev RTT
+for i in range(1, len(arr_rtt)):
+    estimatedRTT = ((1 - a) * estimatedRTT) + (a * arr_rtt[i])
+    devRTT = ((1 - B) * devRTT) + (B * abs(arr_rtt[i] - estimatedRTT))
+    ping = i + 1
+    print("For ", ping, "EstimatedRTT: ", estimatedRTT)
+    print("DevRTT: ", devRTT)
+
+# Get the timeout interval value
+timeout = estimatedRTT + (4 * devRTT)
+
+print("\n\nEstimated RTT:\t", estimatedRTT, " ms")
+print("Dev RTT:\t", devRTT, " ms")
+print("Timeout Interval: ", timeout, " ms")
+
     
-
-
 # for x in arr_rtt:
 #     print('latency:' '%.2e' % Decimal(x))
     
