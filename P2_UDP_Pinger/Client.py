@@ -1,8 +1,8 @@
 # Names: Ricardo Barbosa, Max Halbert, Lindsey Reynolds and Dan Sedano
+# Team: 3
 # Date: 05/26/20
 # Title: Client.py
 # Description:
-
 
 from socket import *
 from time import *
@@ -62,7 +62,6 @@ for x in range(1,11):
 		# increment the counter of pongs
         num_pongs = num_pongs + 1    
         
-
         print("Mesg rcvd:", modifiedMessage.decode())
         print("Start time:", "%.10e" % Decimal(time_sent))
         print("Return time:", "%.10e" % Decimal(time_rcvd))
@@ -99,8 +98,3 @@ print("Min RTT:\t", min_rtt, " ms");
 print("Max RTT:\t", max_rtt, " ms");
 print("Average RTT:\t", avg_rtt, " ms" );
 print("Packet Loss:\t", packet_loss_rate, "%");
-    
-# for x in arr_rtt:
-#     print('latency:' '%.2e' % Decimal(x))
-    
-
