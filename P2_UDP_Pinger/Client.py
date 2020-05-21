@@ -25,7 +25,6 @@ serverPort = 12000
 time_sent = 0.0
 time_rcvd = 0.0
 time_rtt = 0.0
-arr_rtt = [] # Holds the return times
 
 sum_rtt = 0.0   # total sum of RTT of returned pings
 num_pongs = 0   # number of returned pings
@@ -53,7 +52,6 @@ for x in range(1,11):
         time_rcvd = time()
         # Calculates RTT (latency) in ms
         time_rtt = (time_rcvd - time_sent) * 1000
-        arr_rtt.append(time_rtt)
         
         # sum up the RTT of returned message, and update min and max of RTT
         sum_rtt = sum_rtt + time_rtt
@@ -72,6 +70,7 @@ for x in range(1,11):
         
         # Close the socket to end the process
         clientSocket.close()
+       
     # Handles a timeout exception
     except timeout:
         print("No Mesg rcvd")
@@ -101,8 +100,6 @@ print("Max RTT:\t", max_rtt, " ms");
 print("Average RTT:\t", avg_rtt, " ms" );
 print("Packet Loss:\t", packet_loss_rate, "%");
     
-
-
 # for x in arr_rtt:
 #     print('latency:' '%.2e' % Decimal(x))
     
