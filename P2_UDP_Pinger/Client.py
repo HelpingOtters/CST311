@@ -1,8 +1,8 @@
 # Names: Ricardo Barbosa, Max Halbert, Lindsey Reynolds and Dan Sedano
+# Team: 3
 # Date: 05/26/20
 # Title: Client.py
 # Description:
-
 
 from socket import *
 from time import *
@@ -25,7 +25,6 @@ serverPort = 12000
 time_sent = 0.0
 time_rcvd = 0.0
 time_rtt = 0.0
-arr_rtt = [] # Holds the return times
 
 sum_rtt = 0.0   # total sum of RTT of returned pings
 num_pongs = 0   # number of returned pings
@@ -53,7 +52,6 @@ for x in range(1,11):
         time_rcvd = time()
         # Calculates RTT (latency) in ms
         time_rtt = (time_rcvd - time_sent) * 1000
-        arr_rtt.append(time_rtt)
         
         # sum up the RTT of returned message, and update min and max of RTT
         sum_rtt = sum_rtt + time_rtt
@@ -64,7 +62,6 @@ for x in range(1,11):
 		# increment the counter of pongs
         num_pongs = num_pongs + 1    
         
-
         print("Mesg rcvd:", modifiedMessage.decode())
         print("Start time:", "%.10e" % Decimal(time_sent))
         print("Return time:", "%.10e" % Decimal(time_rcvd))
@@ -72,6 +69,7 @@ for x in range(1,11):
         
         # Close the socket to end the process
         clientSocket.close()
+       
     # Handles a timeout exception
     except timeout:
         print("No Mesg rcvd")
@@ -100,33 +98,3 @@ print("Min RTT:\t", min_rtt, " ms");
 print("Max RTT:\t", max_rtt, " ms");
 print("Average RTT:\t", avg_rtt, " ms" );
 print("Packet Loss:\t", packet_loss_rate, "%");
-
-a = .125
-B = .25
-
-estimatedRTT = arr_rtt[0]
-devRTT = estimatedRTT/2
-
-print("For 1 EstimatedRTT: ", estimatedRTT)
-print("DevRTT: ", devRTT)
-
-# Get the Estimated RTT and Dev RTT
-for i in range(1, len(arr_rtt)):
-    estimatedRTT = ((1 - a) * estimatedRTT) + (a * arr_rtt[i])
-    devRTT = ((1 - B) * devRTT) + (B * abs(arr_rtt[i] - estimatedRTT))
-    ping = i + 1
-    print("For ", ping, "EstimatedRTT: ", estimatedRTT)
-    print("DevRTT: ", devRTT)
-
-# Get the timeout interval value
-timeout = estimatedRTT + (4 * devRTT)
-
-print("\n\nEstimated RTT:\t", estimatedRTT, " ms")
-print("Dev RTT:\t", devRTT, " ms")
-print("Timeout Interval: ", timeout, " ms")
-
-    
-# for x in arr_rtt:
-#     print('latency:' '%.2e' % Decimal(x))
-    
-
