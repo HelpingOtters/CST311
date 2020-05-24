@@ -41,9 +41,12 @@ for x in range(1,11):
         clientSocket.sendto(message.encode(), (serverName, serverPort))
         # Records the time when the packet was sent.
         time_sent = time()
-        # Sets the timeout time for the socket. In this case 1 second.
-        clientSocket.settimeout(1)
-        print("Mesg sent:", message)
+
+        # Sets the timeout time for the socket. 
+        if(x == 1): # If this is the first ping, set to 1 minute
+            clientSocket.settimeout(60)
+        else: # Otherwise, set to 1 second.
+            clientSocket.settimeout(1)
         
         # Receives message from server
         modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
@@ -70,6 +73,7 @@ for x in range(1,11):
             estimatedRTT = ((1 - a) * estimatedRTT) + (a * time_rtt)
             devRTT = ((1 - B) * devRTT) + (B * abs(time_rtt - estimatedRTT))
 
+        print("Mesg sent:", message)
         print("Mesg rcvd:", modifiedMessage.decode())
         print("Start time:", "%.10e" % Decimal(time_sent))
         print("Return time:", "%.10e" % Decimal(time_rcvd))

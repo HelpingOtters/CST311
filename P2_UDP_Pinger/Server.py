@@ -21,9 +21,6 @@ while True:
     rand = random.randint(0, 10)
     # Receive the client packet along with the address it is coming from
     message, address = serverSocket.recvfrom(1024)
-
-    print("Mesg rcvd: ", message.decode())
-
     modifiedMessage = message.decode().upper()
 
     # If rand is less is than 4, we consider the packet lost and do not respond
@@ -32,5 +29,8 @@ while True:
         continue
     # Otherwise, the server responds
     serverSocket.sendto(modifiedMessage.encode(), address)
-    print("Mesg sent: ", modifiedMessage)
-    print()
+
+    # Print specified text to the console
+    print(modifiedMessage, " Received")
+    print("Mesg rcvd: ", message.decode())
+    print("Mesg sent: ", modifiedMessage, "\n")
