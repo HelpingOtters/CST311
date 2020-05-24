@@ -1,4 +1,5 @@
 # Names: Ricardo Barbosa, Max Halbert, Lindsey Reynolds and Dan Sedano
+# Team: 3
 # Date: 05/26/20
 # Title: Server.py
 # Description: This file emulates a UDP server with approximately 
