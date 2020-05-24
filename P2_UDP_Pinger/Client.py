@@ -2,21 +2,14 @@
 # Team: 3
 # Date: 05/26/20
 # Title: Client.py
-# Description:
+# Description: This program sends 10 pings to the server program, 
+# keeping track of the RTTs of each ping. It tracks the number of 
+# lost packets and calculates the min, max and average RTTs. It also
+# calculates estimatedRTT, devRTT and timeout interval for the sequence.
 
 from socket import *
 from time import *
 from decimal import Decimal
-
-
-# --- Person 1 and 2 --- #
-# ADD code to...
-# Send 10 pings to the server in the specified format
-# Record start time
-# ADD code to...
-# Get the message from the server
-# Print a "Request timed out" error or print received message
-# Record return time
 
 # Specify socket address
 serverName = 'localhost'
@@ -30,6 +23,12 @@ sum_rtt = 0.0   # total sum of RTT of returned pings
 num_pongs = 0   # number of returned pings
 min_rtt = 1000.0   # set the minimum of RTT to the maximum timout in milliseconds
 max_rtt = 0.0   # set the maximum of RTT to 0
+
+# Declare values for calculating estimatedRTT and devRTT
+a = .125
+B = .25
+estimatedRTT = 0
+devRTT = 0
 
 # Creates 10 pings
 for x in range(1,11):
@@ -61,7 +60,16 @@ for x in range(1,11):
             max_rtt = time_rtt
 		# increment the counter of pongs
         num_pongs = num_pongs + 1    
-        
+
+        # Calculate estimated RTT and dev RTT
+        if(estimatedRTT == 0): # If this is the first sample
+            estimatedRTT = time_rtt 
+            devRTT = estimatedRTT/2
+        else: 
+            # Use formulas to calculate estimatedRTT and devRTT
+            estimatedRTT = ((1 - a) * estimatedRTT) + (a * time_rtt)
+            devRTT = ((1 - B) * devRTT) + (B * abs(time_rtt - estimatedRTT))
+
         print("Mesg rcvd:", modifiedMessage.decode())
         print("Start time:", "%.10e" % Decimal(time_sent))
         print("Return time:", "%.10e" % Decimal(time_rcvd))
@@ -76,25 +84,19 @@ for x in range(1,11):
         print("PONG",x,"Request Timed out\n")
         clientSocket.close()
 
-# -----------------------------------------------------------------------------------------
-# --- Person 3 and 4 --- #
-# Code to determine and print out the minimum, maximum, and average RTTs
-# of all pings from the client
-# Print the number of packets lost and the packet loss rate (in percentage).
-# Compute and print the estimated RTT, the DevRTT and the Timeout interval
-# based on the RTT results.
-
-
-# Find and print the minimum and maximum from the arr_rtt[] and pacet loss rate
-#min_rtt = min(arr_rtt)
-#max_rtt = max(arr_rtt)
-#avg_rtt = 0 if len(arr_rtt) == 0 else sum(arr_rtt)/len(arr_rtt)
-#packet_loss_rate = (10.0 - len(arr_rtt)) * 100 / 10
-
+# Calculate the average RTT time
 avg_rtt = sum_rtt / num_pongs
+
+# Calculate the percentage of lost packets
 packet_loss_rate = (10.0 - num_pongs) * 100 / 10
 
-print("Min RTT:\t", min_rtt, " ms");
-print("Max RTT:\t", max_rtt, " ms");
-print("Average RTT:\t", avg_rtt, " ms" );
-print("Packet Loss:\t", packet_loss_rate, "%");
+# Get the timeout interval value
+timeout = estimatedRTT + (4 * devRTT)
+
+print("Min RTT:\t\t", min_rtt, " ms")
+print("Max RTT:\t\t", max_rtt, " ms")
+print("Average RTT:\t\t", avg_rtt, " ms" )
+print("Packet Loss:\t\t", packet_loss_rate, "%")
+print("Estimated RTT:\t\t", estimatedRTT, " ms")
+print("Dev RTT:\t\t", devRTT, " ms")
+print("Timeout Interval:\t", timeout, " ms")
