@@ -43,10 +43,7 @@ for x in range(1,11):
         time_sent = time()
 
         # Sets the timeout time for the socket. 
-        if(x == 1): # If this is the first ping, set to 1 minute
-            clientSocket.settimeout(60)
-        else: # Otherwise, set to 1 second.
-            clientSocket.settimeout(1)
+        clientSocket.settimeout(1)
         
         # Receives message from server
         modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
