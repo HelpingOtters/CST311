@@ -62,7 +62,7 @@ for x in range(1,11):
         num_pongs = num_pongs + 1    
 
         # Calculate estimated RTT and dev RTT
-        if(estimatedRTT == 0): # If this is the first sample
+        if(x == 1): # If this is the first sample
             estimatedRTT = time_rtt 
             devRTT = estimatedRTT/2
         else: 
