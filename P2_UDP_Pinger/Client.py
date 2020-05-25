@@ -12,7 +12,7 @@ from time import *
 from decimal import Decimal
 
 # Specify socket address
-serverName = 'localhost'
+serverName = '68.7.168.214'
 serverPort = 12000
 
 time_sent = 0.0
@@ -42,23 +42,23 @@ for x in range(1,11):
         # Records the time when the packet was sent.
         time_sent = time()
 
-        # Sets the timeout time for the socket. 
+        # Sets the timeout time for the socket to 1 second
         clientSocket.settimeout(1)
         
         # Receives message from server
         modifiedMessage, serverAddress = clientSocket.recvfrom(2048)
-        # Records the time when the message comes from the server.
+        # Records the time when the message comes from the server
         time_rcvd = time()
         # Calculates RTT (latency) in ms
         time_rtt = (time_rcvd - time_sent) * 1000
         
-        # sum up the RTT of returned message, and update min and max of RTT
+        # Sum up the RTT of returned message, and update min and max of RTT
         sum_rtt = sum_rtt + time_rtt
         if (min_rtt > time_rtt):
             min_rtt = time_rtt
         if (max_rtt < time_rtt):
             max_rtt = time_rtt
-		# increment the counter of pongs
+		# Increment the counter of pongs
         num_pongs = num_pongs + 1    
 
         # Calculate estimated RTT and dev RTT
