@@ -28,7 +28,7 @@ Two Words HERE !!
     * `python TCPClient.py`
 * In the terminal running the client type a sentence in all lower case letters followed by `Enter`
 
-## Screen Shots
+## Screenshots
 ### UDP Client and Server Sample Run
 ![UDP Screenshot](Screenshots/UDP_Screenshot.png)
 ### TCP Client and Server Sample Run
