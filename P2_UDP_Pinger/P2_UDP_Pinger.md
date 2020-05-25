@@ -16,6 +16,10 @@ socket's timeout.
 * Run the Client on the second terminal using the command: 
     * ```python3 Client.py```
 ## Screenshots
+### Client Output
+![Client Output](Screenshots/Client_Output.png)
+### Server Output
+![Server Output](Screenshots/Server_Output.png)
 
 ## Authors and Roles
 * Team Lead: Lindsey Reynolds
