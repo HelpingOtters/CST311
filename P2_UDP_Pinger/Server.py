@@ -3,7 +3,7 @@
 # Date: 05/26/20
 # Title: Server.py
 # Description: This file emulates a UDP server with approximately 
-# 40% packet loss rate
+# 30% packet loss rate
 
 import random
 from socket import *
