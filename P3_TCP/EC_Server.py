@@ -15,8 +15,8 @@ do so it has to go through the server first (X -> S -> Y)
 from socket import *
 from threading import Thread
 
-# Here is a quick vid on theading in python https://www.youtube.com/watch?v=ecKWiaHCEKs
-
+# This video talks about multithreaded servers https://www.youtube.com/watch?v=pPOBH21RnaA
+# From Max: https://www.techbeamers.com/python-tutorial-write-multithreaded-python-server/
 
 serverPort = 12000
 # Create a TCP socket

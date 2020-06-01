@@ -11,6 +11,7 @@ from socket import *
 from threading import Thread
 
 # This video talks about multithreaded servers https://www.youtube.com/watch?v=pPOBH21RnaA
+# From Max: https://www.techbeamers.com/python-tutorial-write-multithreaded-python-server/
 serverPort = 12000
 # Create a TCP socket
 # Notice the use of SOCK_STREAM for TCP packets
