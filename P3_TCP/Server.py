@@ -111,12 +111,22 @@ while True:
     newthread.start() 
     threads.append(newthread)
 
-    # sends messages back to clients after two connections
+    
     if (len(threads) % 2 == 0):
+        # sends messages back to clients after two connections
         for t in threads:
             t.send_message()
+        # receives both messages from the clients
         for t in threads:
+            """
+            I was originally trying to have the thread 0 sleep if there was no message for it. It didn't work how i wanted it to. Maybe it needs to be stuck in a while loop where it polls for a response? 
+
+            This only works well when client X receives the first response. Otherwise it'll wait for both clients to receive the response before it prints out the messages. When it does print out the messages they always print client X's first.
+            """
             t.receive_message()
+        
+        # this is supposed to work. it seems that one of the threads gets put to sleep so it won't record the proper time. maybe we need semaphores or locks?
+
         if threads[0].get_time() < threads[1].get_time(): # tracer
             print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}") # tracer
             print("client x first")
