@@ -9,6 +9,7 @@
 
 from socket import *
 from threading import Thread
+from time import *
 
 # # This video talks about multithreaded servers https://www.youtube.com/watch?v=pPOBH21RnaA
 # # From Max: https://www.techbeamers.com/python-tutorial-write-multithreaded-python-server/
@@ -32,7 +33,7 @@ clientName = ""
 
 
 class ClientThread(Thread): 
-    message = "test"
+
  
     # constructor 
     def __init__(self,ip,port,conn,clientID): 
@@ -40,42 +41,49 @@ class ClientThread(Thread):
         self.ip = ip 
         self.port = port
         self.conn = conn
-
+        self.clientName = ""
+        self.greeting = ""
+        self.message = ""
+        self.timestamp = 0.0
         if (clientID == 1):
             print ("Accepted first connection, calling it client X")
-            clientName = 'X'
-            message = "Client X connected"
+            self.clientName = 'X'
+            self.greeting = "Client X connected"
         else:
             print("Accepted second connection, calling it client Y")
-            clientName = 'Y'
-            message = "Client Y connected"
-        # Sends status message back to client.
-
-        ## this cannot be sent until server has received connection from
-        # both clients
-        # clients_connected = connection()
-        # if clients_connected == True:
-        #     conn.send(message.encode())
-
-        
-    def connection(self):
-        if(len(threads) == 2):
-            self.conn.send(message.encode())
-        
- 
-## need to send message back to client with their "ID"
+            self.clientName = 'Y'
+            self.greeting = "Client Y connected"
     
-    # validates message from client
-    # ***** need to rename *****
-    def run(self): 
-        while True:
-            data = self.conn.recv(1024).decode()
-            if not data:
-                # client connection closed
-                break
-            else:
-                print ("Server received data from ", clientName, data)
-        self.conn.close()    # close the connection and this thread is done
+    def get_greeting(self):
+        return self.greeting
+    
+    def get_client_name(self):
+        return self.clientName
+    
+    def send_message(self):
+        self.conn.send(self.get_greeting().encode())
+
+    def get_message(self):
+        return self.message
+
+    def set_time(self):
+       self.timestamp = time()
+
+    def get_time(self):
+        return self.timestamp
+
+    def receive_message(self):
+        self.message = self.conn.recv(1024).decode()
+        if self.message:
+            self.set_time()
+            print(f"Message from {self.clientName}: {self.message}") # tracer
+    
+   
+
+    def send_awk(self):
+        test = ""
+    
+       
 
 
 #awk1 = "X: received before Y"
@@ -103,14 +111,35 @@ while True:
     newthread.start() 
     threads.append(newthread)
 
-    #if len(threads) == 2:
-    #   for t in threads:
-    #       t.send_message()
+    
+    if (len(threads) % 2 == 0):
+        # sends messages back to clients after two connections
+        for t in threads:
+            t.send_message()
+        # receives both messages from the clients
+        for t in threads:
+            """
+            I was originally trying to have the thread 0 sleep if there was no message for it. It didn't work how i wanted it to. Maybe it needs to be stuck in a while loop where it polls for a response? 
 
-    # for t in threads:
-    #     t.connection()
+            This only works well when client X receives the first response. Otherwise it'll wait for both clients to receive the response before it prints out the messages. When it does print out the messages they always print client X's first.
+            """
+            t.receive_message()
+        
+        # this is supposed to work. it seems that one of the threads gets put to sleep so it won't record the proper time. maybe we need semaphores or locks?
 
-    print(f"len: {len(threads)}")
+        if threads[0].get_time() < threads[1].get_time(): # tracer
+            print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}") # tracer
+            print("client x first")
+            print(f"Client {threads[0].get_client_name()}: {threads[0].get_message()}")
+            print(f"Client {threads[1].get_client_name()}: {threads[1].get_message()}")
+        else:
+            print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}") # tracer
+            print("client y first") # tracer
+            print(f"Client {threads[1].get_client_name()}: {threads[1].get_message()}")
+            print(f"Client {threads[0].get_client_name()}: {threads[0].get_message()}")
+
+                
+    # print(f"len: {len(threads)}") # tracer
     clientID = clientID + 1
  
 for t in threads: 
