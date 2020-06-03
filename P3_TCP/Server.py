@@ -10,32 +10,13 @@
 from socket import *
 from threading import Thread
 
-# This video talks about multithreaded servers https://www.youtube.com/watch?v=pPOBH21RnaA
-# From Max: https://www.techbeamers.com/python-tutorial-write-multithreaded-python-server/
-serverPort = 12000
-# Create a TCP socket
-# Notice the use of SOCK_STREAM for TCP packets
-serverSocket = socket(AF_INET,SOCK_STREAM)
-# Assign IP address and port number to socket
-serverSocket.bind(('',serverPort))
-serverSocket.listen(1)
-print ('The server is ready to receive')
-
-while True:
-    connectionSocket, addr = serverSocket.accept()
-    # I believe everything below this will need to be added processed in a thread.
-    sentence = connectionSocket.recv(1024).decode()
-    capitalizedSentence = sentence.upper()
-    connectionSocket.send(capitalizedSentence.encode())
-    connectionSocket.close()
-
-   from socket import *
-from threading import Thread 
-from SocketServer import ThreadingMixIn 
+# # This video talks about multithreaded servers https://www.youtube.com/watch?v=pPOBH21RnaA
+# # From Max: https://www.techbeamers.com/python-tutorial-write-multithreaded-python-server/
 
 # Multithreaded Python server : TCP Server Socket Thread Pool
 class ClientThread(Thread): 
  
+    # constructor 
     def __init__(self,ip,port,conn,clientID): 
         Thread.__init__(self) 
         self.ip = ip 
@@ -50,8 +31,13 @@ class ClientThread(Thread):
             print("Accepted second connection, calling it client Y")
             clientName = 'Y'
             message = "Client Y connected"
+        # Sends status message back to client.
         conn.send(message)
  
+## need to send message back to client with their "ID"
+    
+    # validates message from client
+    # ***** need to rename *****
     def run(self): 
         while True:
             data = self.conn.recv(1024)
@@ -59,13 +45,18 @@ class ClientThread(Thread):
                 # client connection closed
                 break
             else:
-                print "Server received data from ", clientName, data
+                print ("Server received data from ", clientName, data)
         self.conn.close()    # close the connection and this thread is done
-        
+
+
+
+
+# sends the order awk to the clients    
+def awk():
             
 
 # Multithreaded Python server : TCP Server Socket Program Stub
-SERVER_IP = '10.0.0.2' # server hostname
+SERVER_IP = gethostname() # server hostname 
 SERVER_PORT = 12000 
 BUFFER_SIZE = 1024  # Usually 1024, but we need quick response 
 
@@ -74,6 +65,7 @@ serverSocket = socket(AF_INET, SOCK_STREAM)
 serverSocket.bind((SERVER_IP, SERVER_PORT)) 
 threads = [] 
 
+# using 2 as a parameter to allow for 2 connections to be queued
 serverSocket.listen(2)     
 print ("The server is ready to receive two connections...")
 clientID = 1
@@ -82,7 +74,7 @@ while True:
     newthread = ClientThread(ip,port,connectionSocket,clientID) 
     newthread.start() 
     threads.append(newthread)
-    clientID= clientID + 1
+    clientID = clientID + 1
  
 for t in threads: 
     t.join()  
