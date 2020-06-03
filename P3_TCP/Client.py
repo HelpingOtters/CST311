@@ -27,7 +27,7 @@ try:
     # receives message from server
     connection_status = clientSocket.recv(BUFFER)
 
-    print(f"status: {connection_status}")
+    print(f"status: {connection_status.decode()}")
     # need validation for client ID if good then ask for message input
     if(connection_status):
         print(connection_status.decode())
