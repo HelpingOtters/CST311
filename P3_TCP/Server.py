@@ -13,8 +13,26 @@ from threading import Thread
 # # This video talks about multithreaded servers https://www.youtube.com/watch?v=pPOBH21RnaA
 # # From Max: https://www.techbeamers.com/python-tutorial-write-multithreaded-python-server/
 
+
 # Multithreaded Python server : TCP Server Socket Thread Pool
+clientName = ""
+#xCtr = 0
+#yCtr = 0
+
+
+
+# sends the order awk to the clients    
+#def awk():
+
+ #   if: ()
+  #      return awk1
+  #  else:
+   #     return awk2   
+
+
+
 class ClientThread(Thread): 
+    message = "test"
  
     # constructor 
     def __init__(self,ip,port,conn,clientID): 
@@ -32,7 +50,18 @@ class ClientThread(Thread):
             clientName = 'Y'
             message = "Client Y connected"
         # Sends status message back to client.
-        conn.send(message)
+
+        ## this cannot be sent until server has received connection from
+        # both clients
+        # clients_connected = connection()
+        # if clients_connected == True:
+        #     conn.send(message.encode())
+
+        
+    def connection(self):
+        if(len(threads) == 2):
+            self.conn.send(message.encode())
+        
  
 ## need to send message back to client with their "ID"
     
@@ -40,7 +69,7 @@ class ClientThread(Thread):
     # ***** need to rename *****
     def run(self): 
         while True:
-            data = self.conn.recv(1024)
+            data = self.conn.recv(1024).decode()
             if not data:
                 # client connection closed
                 break
@@ -49,11 +78,10 @@ class ClientThread(Thread):
         self.conn.close()    # close the connection and this thread is done
 
 
+#awk1 = "X: received before Y"
+#awk2 = "Y: received before X"
 
 
-# sends the order awk to the clients    
-def awk():
-            
 
 # Multithreaded Python server : TCP Server Socket Program Stub
 SERVER_IP = gethostname() # server hostname 
@@ -74,6 +102,15 @@ while True:
     newthread = ClientThread(ip,port,connectionSocket,clientID) 
     newthread.start() 
     threads.append(newthread)
+
+    #if len(threads) == 2:
+    #   for t in threads:
+    #       t.send_message()
+
+    # for t in threads:
+    #     t.connection()
+
+    print(f"len: {len(threads)}")
     clientID = clientID + 1
  
 for t in threads: 

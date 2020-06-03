@@ -23,25 +23,30 @@ try:
     clientSocket = socket(AF_INET, SOCK_STREAM)
     clientSocket.connect((serverName,serverPort))
     # sets timeout
-    clientSocket.settimeout(1)
+    clientSocket.settimeout(30)
     # receives message from server
-    client_status = clientSocket.recv(BUFFER)
-    
-    if not client_status:
+    connection_status = clientSocket.recv(BUFFER)
+
+    print(f"status: {connection_status}")
+    # need validation for client ID if good then ask for message input
+    if(connection_status):
+        print(connection_status.decode())
+        sentence = input("Enter message to send to server: ")
+        print(f"Message sent to server: {sentence}")
+        clientSocket.send(sentence.encode())
+
+        modifiedSentence = clientSocket.recv(BUFFER)
+        print ("From Server:", modifiedSentence.decode())
+        
+    else:
         print("Did not receive message from Server:")
         clientSocket.close()
 
-    # need validation for client ID if good then ask for message input
-
-    sentence = input("Enter message to send to server: ")
-    print(f"Message sent to server: {sentence}")
-
     # add code to handle awk from server. print out the awk from server
+    #acknowledge_statement = awk()
+   
 
-    clientSocket.send(sentence.encode())
-
-    modifiedSentence = clientSocket.recv(BUFFER)
-    print ("From Server:", modifiedSentence.decode())
+    
 except timeout:
     print("request timed out")
     clientSocket.close()
