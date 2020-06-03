@@ -76,7 +76,7 @@ class ClientThread(Thread):
         self.message = self.conn.recv(1024).decode()
         if self.message:
             self.set_time()
-            print(f"Message from {self.clientName}: {self.message}")
+            print(f"Message from {self.clientName}: {self.message}") # tracer
     
    
 
@@ -117,14 +117,14 @@ while True:
             t.send_message()
         for t in threads:
             t.receive_message()
-        if threads[0].get_time() < threads[1].get_time():
-            print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}")
+        if threads[0].get_time() < threads[1].get_time(): # tracer
+            print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}") # tracer
             print("client x first")
             print(f"Client {threads[0].get_client_name()}: {threads[0].get_message()}")
             print(f"Client {threads[1].get_client_name()}: {threads[1].get_message()}")
         else:
-            print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}")
-            print("client y first")
+            print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}") # tracer
+            print("client y first") # tracer
             print(f"Client {threads[1].get_client_name()}: {threads[1].get_message()}")
             print(f"Client {threads[0].get_client_name()}: {threads[0].get_message()}")
 
