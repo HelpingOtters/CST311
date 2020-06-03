@@ -22,13 +22,13 @@ Two Words HERE !!
 * In the terminal running the client type a sentence in all lower case letters followed by `Enter`
 ### Using TCP Protocol
 * Open two terminals in the folder containing the files
-* Run the Server first on the first terminal using the command:
+* Run the Server on the first terminal using the command:
     * `python TCPServer.py`
 * Run the Client on the second terminal using the command: 
     * `python TCPClient.py`
 * In the terminal running the client type a sentence in all lower case letters followed by `Enter`
 
-## Screen Shots
+## Screenshots
 ### UDP Client and Server Sample Run
 ![UDP Screenshot](Screenshots/UDP_Screenshot.png)
 ### TCP Client and Server Sample Run
