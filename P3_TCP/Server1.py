@@ -31,9 +31,7 @@ cvToSend = Condition(msgCtr_lock)
 
 
 
-class ClientThread(Thread): 
-    
- 
+class ClientThread(Thread):  
     # constructor 
     def __init__(self,ip,port,conn,clientID): 
         Thread.__init__(self) 
@@ -42,7 +40,7 @@ class ClientThread(Thread):
         self.conn = conn
         self.clientName = ""
         self.greeting = ""
-        self.message = ""
+        #self.message = ""
         self.timestamp = 0.0
         if (clientID == 1):
             print ("Accepted first connection, calling it client X")
@@ -52,28 +50,29 @@ class ClientThread(Thread):
             print("Accepted second connection, calling it client Y")
             self.clientName = 'Y'
             self.greeting = "Client Y connected"
-        self.conn.send(self.greeting.encode())
-        
+        #self.conn.send(self.greeting.encode())
+
     def run(self):
-        global msgCtr
-        global msg
-        global cvToSend
+        global msgCtr #not sure if this is "kosher"
+        self.msg = ""
+        self.data = ""
+        self.cvToSend = Condition(Lock())
         while True:
-            data = self.conn.recv(1024).decode()
-            if not data:
+            self.data = self.conn.recv(1024).decode()
+            if not self.data:
                 # client connection closed
                 break
             else:
                 cvToSend.acquire()  # acquire the lock to update message counter
                 
                 if (msgCtr == 0):   # it is the first message
-                    msg = self.clientName + ": " + data + " received before "
+                    self.msg = self.clientName + ": " + self.data + " received before "
                     msgCtr = msgCtr + 1 
                     
                 else:               # it is the second message
-                    msg = msg + self.clientName + ": " + data
+                    self.msg = self.msg + self.clientName + ": " + self.data
                     msgCtr = msgCtr + 1
-                print("Client ", self.clientName, " sent message ", msgCtr, ": ", data)
+                print("Client ", self.clientName, " sent message ", msgCtr, ": ", self.data)
                 
                 cvToSend.notify()   # to notify the main thread a message is received
                 cvToSend.release()  # release the lock
@@ -92,8 +91,11 @@ class ClientThread(Thread):
     def send_message(self):
         self.conn.send(self.get_greeting().encode())
 
-    def get_message(self):
-        return self.message
+    def get_msg(self):
+        return self.msg
+
+    # def get_message(self):
+    #     return self.message
 
     def set_time(self):
        self.timestamp = time()
@@ -102,9 +104,13 @@ class ClientThread(Thread):
         return self.timestamp
 
     def receive_message(self):
+        cvToSend.acquire()
         self.message = self.conn.recv(1024).decode()
         if self.message:
-            self.set_time()
+            cvToSend.notify()
+            cvToSend.release()
+        sleep(.1)
+            # self.set_time()
             #print(f"Message from {self.clientName}: {self.message}") # tracer
     
    
@@ -134,19 +140,29 @@ while True:
     newthread.start() 
     threads.append(newthread)
     clientID = clientID + 1
-    if (clientID > 2):
-        break           # only accept 2 connections
-    
+
+    if(len(threads) % 2 == 0):
+        print("before break")
+        for t in threads:
+            t.send_message()
+        break
+# cvToSend.acquire()    
+# for t in threads:
+#     t.receive_message()
+#     cvToSend.wait()
+
 # wait for both threads to receive a message
 cvToSend.acquire()
 while (msgCtr != 2):
     cvToSend.wait()     # wait for a thread's notification for any message received
 
-# message is ready to send to all the clients
-for t in threads:
-    t.get_connections().send(msg.encode())
+# # message is ready to send to all the clients
+# for t in threads:
+#     print(t.get_msg())
+#     t.get_connections().send(t.get_msg().encode())
 
 print("Waiting a bit for clients to close connections")
+
 for t in threads: 
     t.join()
 print("Done.")
