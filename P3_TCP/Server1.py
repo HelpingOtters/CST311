@@ -50,6 +50,7 @@ class ClientThread(Thread):
 
     def run(self):
         global msgCtr 
+        global first_client
         self.server_output = ""
         self.client_message = ""
         while True:
@@ -63,8 +64,6 @@ class ClientThread(Thread):
                  # it is the first message
                 if (msgCtr == 0):
 
-                    # ****************** Note for Max: Flagged for deletion *****************
-                    #self.server_output = self.clientName + ": " + self.client_message + " received before "
                     self.server_output = f"Client {self.clientName}: {self.client_message}" 
                     msgCtr = msgCtr + 1 
                     # store clientID of the client that returned the first message
@@ -73,8 +72,6 @@ class ClientThread(Thread):
                 # it is the second message
                 else:
 
-                    # ************** Note for Max: Do you think we should use these to generate the message that is broadcast to all clients? ************
-                    ## ************* Max, delete this (below) if you don't agree with my idea that i sent yo on slack ********************************************
                     self.server_output = f"Client {self.clientName}: {self.client_message}" 
                     #self.server_output = self.server_output + self.clientName + ": " + self.client_message
 
@@ -100,8 +97,6 @@ class ClientThread(Thread):
     # Sends clients a handshake messaging allowing client to send message back
     def send_handshake(self):
         self.conn.send(self.get_handshake().encode())
-
-    # ************************************* Max delete this if you don't agree with my idea from slack *****************************************
     def get_server_output(self):
         return self.server_output
     #Sends a message to client
@@ -142,22 +137,15 @@ while (msgCtr != 2):
 # message is ready to send to all the clients
 if first_client == "X":
     #constructs broadcast message
-    print(f"**************Tracer: thread 0: {threads[0].clientName} thread 1: {threads[1].clientName}") # tracer
     broadcast_message = f"{threads[0].get_server_output()} before {threads[1].get_server_output()}"
-    print(f"***********Tracer after message is made! {broadcast_message}*************")
 
     # sends broadcast message to all clients
     for t in threads:
-        print(f"***********Tracer inside for loop! {broadcast_message}*************")
-
         t.send_message(broadcast_message)
 else:
-    print(f"**************Tracer: thread 0: {threads[0].clientName} thread 1: {threads[1].clientName}") # tracer
     broadcast_message = f"{threads[1].get_server_output()} before {threads[0].get_server_output()}"
-    print(f"***********Tracer after message is made! {broadcast_message}*************")
+    
     for t in threads:
-        print(f"***********Tracer inside for loop! {broadcast_message}*************")
-
         t.send_message(broadcast_message)
 
 print("Waiting a bit for clients to close connections")
