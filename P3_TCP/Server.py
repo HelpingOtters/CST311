@@ -8,33 +8,27 @@
 # the correct client.
 
 from socket import *
-from threading import Thread
+from threading import *
 from time import *
 
+# ****************** Team lets keep these links here for future reference :) ******************
 # # This video talks about multithreaded servers https://www.youtube.com/watch?v=pPOBH21RnaA
 # # From Max: https://www.techbeamers.com/python-tutorial-write-multithreaded-python-server/
 
 
-# Multithreaded Python server : TCP Server Socket Thread Pool
-clientName = ""
-#xCtr = 0
-#yCtr = 0
+# Counter for counting messages arrived to server
+msgCtr = 0
+# Message to be sent to all clients
+msg = ""
+# A lock to protect the msgCtr update
+msgCtr_lock = Lock()
+# A condition variable to wait for message received by both client threads
+cvToSend = Condition(msgCtr_lock)
+# Stores the client name of the client that connected first
+first_client = ""
 
-
-
-# sends the order awk to the clients    
-#def awk():
-
- #   if: ()
-  #      return awk1
-  #  else:
-   #     return awk2   
-
-
-
-class ClientThread(Thread): 
-
- 
+# Creates a class for each client thread
+class ClientThread(Thread):  
     # constructor 
     def __init__(self,ip,port,conn,clientID): 
         Thread.__init__(self) 
@@ -42,105 +36,120 @@ class ClientThread(Thread):
         self.port = port
         self.conn = conn
         self.clientName = ""
-        self.greeting = ""
-        self.message = ""
+        self.handshake = ""
         self.timestamp = 0.0
+        # Assigns client names to thread and sets handshake message
         if (clientID == 1):
             print ("Accepted first connection, calling it client X")
-            self.clientName = 'X'
-            self.greeting = "Client X connected"
+            self.clientName = "X"
+            self.handshake = "Client X connected"
         else:
             print("Accepted second connection, calling it client Y")
-            self.clientName = 'Y'
-            self.greeting = "Client Y connected"
-    
-    def get_greeting(self):
-        return self.greeting
-    
+            self.clientName = "Y"
+            self.handshake = "Client Y connected"
+
+    def run(self):
+        global msgCtr 
+        global first_client
+        self.server_output = ""
+        self.client_message = ""
+        while True:
+            self.client_message = self.conn.recv(1024).decode()
+            if not self.client_message:
+                # client connection closed
+                break
+            else:
+                cvToSend.acquire()  # acquire the lock to update message counter
+                
+                 # it is the first message
+                if (msgCtr == 0):
+
+                    self.server_output = f"Client {self.clientName}: {self.client_message}" 
+                    msgCtr = msgCtr + 1 
+                    # store clientID of the client that returned the first message
+                    first_client = self.clientName
+                
+                # it is the second message
+                else:
+
+                    self.server_output = f"Client {self.clientName}: {self.client_message}" 
+                    #self.server_output = self.server_output + self.clientName + ": " + self.client_message
+
+                    msgCtr = msgCtr + 1
+                print("Client ", self.clientName, " sent message ", msgCtr, ": ", self.client_message)
+                
+                cvToSend.notify()   # to notify the main thread a message is received
+                cvToSend.release()  # release the lock
+               
+        self.conn.close()    # close the connection and this thread is done
+
+    # *************** Note for Team 2, OK to delete this comment. You can probably use this for the EC? ******************
+    # If not, then delete this method.
+    # Returns the thread's connetion socket
+    def get_connections(self):
+        return self.conn
+    # Returns the handshake message
+    def get_handshake(self):
+        return self.handshake
+    # Returns the client's name
     def get_client_name(self):
         return self.clientName
-    
-    def send_message(self):
-        self.conn.send(self.get_greeting().encode())
-
-    def get_message(self):
-        return self.message
-
-    def set_time(self):
-       self.timestamp = time()
-
-    def get_time(self):
-        return self.timestamp
-
-    def receive_message(self):
-        self.message = self.conn.recv(1024).decode()
-        if self.message:
-            self.set_time()
-            print(f"Message from {self.clientName}: {self.message}") # tracer
-    
-   
-
-    def send_awk(self):
-        test = ""
-    
-       
-
-
-#awk1 = "X: received before Y"
-#awk2 = "Y: received before X"
-
-
+    # Sends clients a handshake messaging allowing client to send message back
+    def send_handshake(self):
+        self.conn.send(self.get_handshake().encode())
+    def get_server_output(self):
+        return self.server_output
+    #Sends a message to client
+    def send_message(self,message):
+        self.conn.send(message.encode())
 
 # Multithreaded Python server : TCP Server Socket Program Stub
-SERVER_IP = gethostname() # server hostname 
 SERVER_PORT = 12000 
 BUFFER_SIZE = 1024  # Usually 1024, but we need quick response 
 
 serverSocket = socket(AF_INET, SOCK_STREAM)  
-# tcpServer.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1) 
-serverSocket.bind((SERVER_IP, SERVER_PORT)) 
-threads = [] 
+serverSocket.bind(('', SERVER_PORT)) 
+threads = []
 
 # using 2 as a parameter to allow for 2 connections to be queued
-serverSocket.listen(2)     
+serverSocket.listen(2)      
 print ("The server is ready to receive two connections...")
-clientID = 1
+clientID = 1 # used to identify the client
+
 while True: 
     (connectionSocket, (ip,port)) = serverSocket.accept() 
     newthread = ClientThread(ip,port,connectionSocket,clientID) 
     newthread.start() 
     threads.append(newthread)
-
-    
-    if (len(threads) % 2 == 0):
-        # sends messages back to clients after two connections
-        for t in threads:
-            t.send_message()
-        # receives both messages from the clients
-        for t in threads:
-            """
-            I was originally trying to have the thread 0 sleep if there was no message for it. It didn't work how i wanted it to. Maybe it needs to be stuck in a while loop where it polls for a response? 
-
-            This only works well when client X receives the first response. Otherwise it'll wait for both clients to receive the response before it prints out the messages. When it does print out the messages they always print client X's first.
-            """
-            t.receive_message()
-        
-        # this is supposed to work. it seems that one of the threads gets put to sleep so it won't record the proper time. maybe we need semaphores or locks?
-
-        if threads[0].get_time() < threads[1].get_time(): # tracer
-            print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}") # tracer
-            print("client x first")
-            print(f"Client {threads[0].get_client_name()}: {threads[0].get_message()}")
-            print(f"Client {threads[1].get_client_name()}: {threads[1].get_message()}")
-        else:
-            print(f"Thread 0 time: {threads[0].get_time()} Thread 1 time: {threads[1].get_time()}") # tracer
-            print("client y first") # tracer
-            print(f"Client {threads[1].get_client_name()}: {threads[1].get_message()}")
-            print(f"Client {threads[0].get_client_name()}: {threads[0].get_message()}")
-
-                
-    # print(f"len: {len(threads)}") # tracer
     clientID = clientID + 1
- 
+    
+    # Checks for even number of clients before sending handshake messages to clients.
+    if(len(threads) % 2 == 0):
+        for t in threads:
+            t.send_handshake()
+        break
+
+# wait for both threads to receive a message
+cvToSend.acquire()
+while (msgCtr != 2):
+    cvToSend.wait() # wait for a thread's notification for any message received
+
+# message is ready to send to all the clients
+if first_client == "X":
+    #constructs broadcast message
+    broadcast_message = f"{threads[0].get_server_output()} before {threads[1].get_server_output()}"
+
+    # sends broadcast message to all clients
+    for t in threads:
+        t.send_message(broadcast_message)
+else:
+    broadcast_message = f"{threads[1].get_server_output()} before {threads[0].get_server_output()}"
+    
+    for t in threads:
+        t.send_message(broadcast_message)
+
+print("Waiting a bit for clients to close connections")
+
 for t in threads: 
-    t.join()  
+    t.join()
+print("Done.")
