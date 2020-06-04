@@ -25,6 +25,7 @@ try:
     clientSocket.settimeout(30)
     # receives message from server
     print("Waiting for other client...")
+    # Receives handshake message from server.
     connection_status = clientSocket.recv(BUFFER)
 
     #print(f"status: {connection_status.decode()}")
@@ -35,8 +36,10 @@ try:
         #print(f"Message sent to server: {sentence}")
         clientSocket.send(sentence.encode())
 
-        modifiedSentence = clientSocket.recv(BUFFER)
-        print ("From Server:", modifiedSentence.decode())
+        awk_message = clientSocket.recv(BUFFER)
+        print (awk_message.decode())
+
+        clientSocket.close()
         
     else:
         print("Did not receive message from Server:")
