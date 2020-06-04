@@ -37,7 +37,7 @@ connection_status = clientSocket.recv(BUFFER)
 print(connection_status.decode())
 sentence = input("Enter message to send to server: ")
 clientSocket.send(sentence.encode())
-# Accepts awk message from server
+# Accepts awk message from server 
 awk_message = clientSocket.recv(BUFFER)
 print (awk_message.decode())
 
