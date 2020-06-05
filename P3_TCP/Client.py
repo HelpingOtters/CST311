@@ -13,45 +13,32 @@ Team 1 will write the client for the regular assignment
 from socket import *
 # In your command prompt, type in hostname and press enter.
 # What comes up is your computer's hostname
-clientName = gethostname()
-serverName = gethostname() 
+serverName = gethostname() # since it's running on one machine
 serverPort = 12000
 BUFFER = 1024
 
+# Try block for connection
 try:
-
     clientSocket = socket(AF_INET, SOCK_STREAM)
     clientSocket.connect((serverName,serverPort))
-    # sets timeout
-    clientSocket.settimeout(30)
-    # receives message from server
-    connection_status = clientSocket.recv(BUFFER)
 
-    print(f"status: {connection_status.decode()}")
-    # need validation for client ID if good then ask for message input
-    if(connection_status):
-        print(connection_status.decode())
-        sentence = input("Enter message to send to server: ")
-        print(f"Message sent to server: {sentence}")
-        clientSocket.send(sentence.encode())
+except error:
+    print("Unable to connect")
+    exit(1)
 
-        modifiedSentence = clientSocket.recv(BUFFER)
-        print ("From Server:", modifiedSentence.decode())
-        
-    else:
-        print("Did not receive message from Server:")
-        clientSocket.close()
+# receives message from server
+print("Waiting for other client...")
 
-    # add code to handle awk from server. print out the awk from server
-    #acknowledge_statement = awk()
-   
+# Receives handshake message from server.
+# ClientSocket will not execute until message is received
+connection_status = clientSocket.recv(BUFFER)
 
+print(connection_status.decode())
+sentence = input("Enter message to send to server: ")
+clientSocket.send(sentence.encode())
+# Accepts awk message from server 
+awk_message = clientSocket.recv(BUFFER)
+print (awk_message.decode())
+
+clientSocket.close()  
     
-except timeout:
-    print("request timed out")
-    clientSocket.close()
-
-
-clientSocket.close()
-
-
