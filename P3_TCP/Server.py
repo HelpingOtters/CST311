@@ -45,6 +45,7 @@ class ClientThread(Thread):
             self.client_name = "Y"
             self.ack_message = "Client Y connected"
     
+    # sets the message rcvd counter
     def set_message_counter(self):
         global message_cv
         global message_count
@@ -57,7 +58,6 @@ class ClientThread(Thread):
             message_count = message_count + 1
         message_cv.notify()   # to notify the main thread a message is received
         message_cv.release()  # release the lock
-
     # Returns the acknowledgment message
     def get_ack_message(self):
         return self.ack_message
@@ -104,18 +104,18 @@ class ClientThread(Thread):
 # --------------------------------------- End of Class --------------------------------------- #
 
 # Broadcasts the order of message received to all clients
-def create_broadcast_msg(threads,first_client):
+def create_broadcast_msg(connections,first_client):
     if first_client == "X":
         #constructs broadcast message
-        broadcast_message = f"{threads[0].get_server_broadcast()} before {threads[1].get_server_broadcast()}"
+        broadcast_message = f"{connections[0].get_server_broadcast()} before {connections[1].get_server_broadcast()}"
     else:
-        broadcast_message = f"{threads[1].get_server_broadcast()} before {threads[0].get_server_broadcast()}"
+        broadcast_message = f"{connections[1].get_server_broadcast()} before {connections[0].get_server_broadcast()}"
     return broadcast_message
 
 # broadcasts ack to clients
-def ack_broadcast_order(threads, broadcast_message):
-    for t in threads:
-        t.send_message(broadcast_message)
+def send_broadcast_ack(connections, broadcast_message):
+    for c in connections:
+        c.send_message(broadcast_message)
 
 
 # Main method
@@ -126,7 +126,8 @@ def main():
 
     serverSocket = socket(AF_INET, SOCK_STREAM)  
     serverSocket.bind(('', SERVER_PORT)) 
-    threads = []
+    # Holds the connection threads
+    connections = []
 
     # using 2 as a parameter to allow for 2 connections to be queued
     serverSocket.listen(2)      
@@ -135,30 +136,30 @@ def main():
 
     while True: 
         (connectionSocket, (ip,port)) = serverSocket.accept() 
-        newthread = ClientThread(ip,port,connectionSocket,client_id) 
-        newthread.start() 
-        threads.append(newthread)
+        new_connection = ClientThread(ip,port,connectionSocket,client_id) 
+        new_connection.start() 
+        connections.append(new_connection)
         client_id = client_id + 1
 
         # Checks that there is more than one client before finalizing the connection
-        if(len(threads) > 1):
-            for t in threads:
-                t.send_ack_message()
+        if(len(connections) > 1):
+            for c in connections:
+                c.send_ack_message()
             break
 
-    # wait for both threads to receive a message
+    # wait for both connections to receive a message
     message_cv.acquire()
     while (message_count != 2):
         message_cv.wait() # wait for a thread's notification for any message received
    
-    # broadcasts an awk to all clients
-    broadcast_message = create_broadcast_msg(threads,first_client)
-    ack_broadcast_order(threads,broadcast_message)
+    # broadcasts an ack to all clients
+    broadcast_message = create_broadcast_msg(connections,first_client)
+    send_broadcast_ack(connections,broadcast_message)
 
     print("Waiting a bit for clients to close connections")
 
-    for t in threads: 
-        t.join()
+    for c in connections: 
+        c.join()
 
     print("Done.")
 
