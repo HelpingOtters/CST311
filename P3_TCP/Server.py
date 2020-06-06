@@ -26,7 +26,7 @@ message_cv = Condition(message_count_lock) # A CV to wait for server to receive 
 
 
 # Creates a class for each client thread
-class ClientThread(Thread):  
+class ClientConnection(Thread):  
     # Constructor 
     def __init__(self, ip, port, connection, client_id): 
         Thread.__init__(self) 
@@ -58,6 +58,7 @@ class ClientThread(Thread):
             message_count = message_count + 1
         message_cv.notify()   # to notify the main thread a message is received
         message_cv.release()  # release the lock
+
     # Returns the acknowledgment message
     def get_ack_message(self):
         return self.ack_message
@@ -87,12 +88,14 @@ class ClientThread(Thread):
 
 
     def run(self):
-        # self.server_output = ""
         self.client_message = ""
+        global message_count
         while True:
             self.client_message = self.connection.recv(1024).decode()
             if not self.client_message:
                 # client connection closed
+                print(f"Client {self.client_name} disconnected")
+                message_count = 2
                 break
             else:
                 self.set_message_counter()
@@ -136,7 +139,7 @@ def main():
 
     while True: 
         (connectionSocket, (ip,port)) = serverSocket.accept() 
-        new_connection = ClientThread(ip,port,connectionSocket,client_id) 
+        new_connection = ClientConnection(ip,port,connectionSocket,client_id) 
         new_connection.start() 
         connections.append(new_connection)
         client_id = client_id + 1
@@ -151,7 +154,6 @@ def main():
     message_cv.acquire()
     while (message_count != 2):
         message_cv.wait() # wait for a thread's notification for any message received
-   
     # broadcasts an ack to all clients
     broadcast_message = create_broadcast_msg(connections,first_client)
     send_broadcast_ack(connections,broadcast_message)
