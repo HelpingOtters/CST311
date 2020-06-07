@@ -12,6 +12,15 @@ The extra credit assignment is a modified version of the main assignment. Two cl
 * Run server *first* with the command `python3 Server.py`
 * Run two clients with the command `python3 Client.py`
 ## Screenshots
+### Case 1: Client X before Client Y
+![SS1](Screenshots/SS1.png)
+![SS2](Screenshots/SS2.png)
+![SS3](Screenshots/SS3.png)
+![SS4](Screenshots/SS4.png)
+![SS5](Screenshots/SS5.png)
+### Case 2: Client Y before Client X
+![SS6](Screenshots/SS6.png)
+![SS7](Screenshots/SS7.png)
 ## Authors and Roles
 ### Team 1 Main Assignment:
   * Dan: Team Lead/Programmer
