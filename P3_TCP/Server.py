@@ -70,8 +70,8 @@ class ClientConnection(Thread):
         self.connection.send(self.get_ack_message().encode())
     # Returns broadcast message
     def get_server_broadcast(self):
-        #self.create_server_output()
-        self.server_broadcast = f"Client {self.client_name}: {self.client_message}"
+        #self.server_broadcast = f"Client {self.client_name}: {self.client_message}"
+        self.server_broadcast = "Client " + self.client_name + ": " + self.client_message 
         return self.server_broadcast
     #Sends a message to client
     def send_message(self,message):
