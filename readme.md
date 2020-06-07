@@ -17,7 +17,7 @@
 * Learn to properly set socket timeout
 * Send message to server for processing then back to client
 
-## [Program 3: TCP Multi-Client Server(/P3_TCP)
+## [Program 3: TCP Multi-Client Server](/P3_TCP)
 ### Objectives
 * Create a TCP Server program with multiple connections
 * Use multi-threading to handle multiple connections
