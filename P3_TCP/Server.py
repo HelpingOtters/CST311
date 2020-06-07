@@ -94,8 +94,6 @@ class ClientConnection(Thread):
             self.client_message = self.connection.recv(1024).decode()
             if not self.client_message:
                 # client connection closed
-                print(f"Client {self.client_name} disconnected")
-                message_count = 2
                 break
             else:
                 self.set_message_counter()
@@ -134,7 +132,7 @@ def main():
 
     # using 2 as a parameter to allow for 2 connections to be queued
     serverSocket.listen(2)      
-    print ("The server is ready to receive two connections...")
+    print ("The server is ready to receive two connections...\n")
     client_id = 1 # used to identify the client
 
     while True: 
@@ -149,8 +147,9 @@ def main():
             for c in connections:
                 c.send_ack_message()
             break
-
     # wait for both connections to receive a message
+    print("\nWaiting to receive messages from client X and client Y....\n")
+    
     message_cv.acquire()
     while (message_count != 2):
         message_cv.wait() # wait for a thread's notification for any message received
@@ -158,7 +157,7 @@ def main():
     broadcast_message = create_broadcast_msg(connections,first_client)
     send_broadcast_ack(connections,broadcast_message)
 
-    print("Waiting a bit for clients to close connections")
+    print("\nWaiting a bit for clients to close connections")
 
     for c in connections: 
         c.join()
