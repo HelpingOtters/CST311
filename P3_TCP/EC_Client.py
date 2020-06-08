@@ -28,11 +28,14 @@ def receiveMessage():
         
         while True:
             message = (clientSocket.recv(1024)).decode() # I moved the Decode here because it wasn't properly matching up with the elif condition - DS
+            # raise_signal(SIGIO)
+
             if not message:
                 break
             elif message == "Connection closed":
                 connectionOpen = False
                 print(message)
+                # raise_signal(SIGIO)
                 kill(getpid(),SIGINT) # I used this to kill the program from the OS side. The input was locking up resources. 
                                       #  Comment out this line to see what I mean. After you see "Connection closed" hit enter to end the program (without this line of code)
                                       # If you decided to use this line of code, then all the connectionOpen variable and anything else that uses that variable can be deleted. - DS
@@ -69,9 +72,13 @@ if __name__ == '__main__':
     #loop keyboard input    
     #while connectionOpen:
     while True: # changed this loop to emulate a do-while loop - DS
+        # pause()
+        try:
+            message = input('')
+            sendMessage()
+        except KeyboardInterrupt:
+            pass
         
-        message = input('')
-        sendMessage()
         if not connectionOpen:
             break
  
