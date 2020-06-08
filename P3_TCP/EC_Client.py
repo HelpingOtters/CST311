@@ -4,8 +4,9 @@ Team: 3
 Date: 06/09/2020
 Title: EC_Client.py
 Description: Extra Credit Assignment. This client will establish a TCP connection
-to the server. It will then send a message to the server to be relayed to another
-client. 
+to the server and wait until a second client connects with the same server. It will 
+then be able to send messages back and forth to the other client, through the server.
+
 """
 
 from socket import *
@@ -30,12 +31,10 @@ def receiveMessage():
             message = (clientSocket.recv(1024)).decode() # I moved the Decode here because it wasn't properly matching up with the elif condition - DS
             if not message:
                 break
-            elif message == "Connection closed":
+            elif message.lower() == "bye":
                 connectionOpen = False
-                print(message)
-                kill(getpid(),SIGINT) # I used this to kill the program from the OS side. The input was locking up resources. 
-                                      #  Comment out this line to see what I mean. After you see "Connection closed" hit enter to end the program (without this line of code)
-                                      # If you decided to use this line of code, then all the connectionOpen variable and anything else that uses that variable can be deleted. - DS
+                print(message, "\n", "Connection closed.", )
+                kill(getpid(),SIGINT)
                 break
             print(message)
            
@@ -69,9 +68,12 @@ if __name__ == '__main__':
     #loop keyboard input    
     #while connectionOpen:
     while True: # changed this loop to emulate a do-while loop - DS
+        try:
+            message = input('')
+            sendMessage()
+        except KeyboardInterrupt:
+            pass
         
-        message = input('')
-        sendMessage()
         if not connectionOpen:
             break
  

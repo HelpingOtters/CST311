@@ -63,18 +63,15 @@ class ClientConnection(Thread):
     def run(self):
         self.client_message = ""
         while True:
-            # Added a try block so it doesn't error out when trying to send a connection to a client that is no longer connected
+            # So it doesn't error out when trying to send a connection to a client that is no longer connected
             try:
                 self.client_message = self.connection.recv(1024).decode()
             except error:
                 exit(0)
+                
             if not self.client_message:
                 break
-            if self.client_message.lower() == "bye":
-                for thread in connections:
-                    thread.send_message("Connection closed")
-                break
-                
+    
             for thread in connections:
                 thread.send_message(self.client_message)
                 
