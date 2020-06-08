@@ -23,7 +23,7 @@ connectionOpen = False
 
 # function to receive messages through client socket
 def receiveMessage():
-    global connectionOpen # I added this in (i believe) because connectionOpen was not updating before
+    global connectionOpen # I added this in (i believe) because connectionOpen was not updating before - DS
     try:
         
         while True:
@@ -35,19 +35,19 @@ def receiveMessage():
                 print(message)
                 kill(getpid(),SIGINT) # I used this to kill the program from the OS side. The input was locking up resources. 
                                       #  Comment out this line to see what I mean. After you see "Connection closed" hit enter to end the program (without this line of code)
-                                      # If you decided to use this line of code, then all the connectionOpen variable and anything else that uses that variable can be deleted.
+                                      # If you decided to use this line of code, then all the connectionOpen variable and anything else that uses that variable can be deleted. - DS
                 break
             print(message)
            
     except error:
         print("Bad Connection")
-        kill(getpid(),SIGINT) # ANOTHER FORCE KILL HERE!
+        kill(getpid(),SIGINT) # ANOTHER FORCE KILL HERE! - DS
 
    
 
 # function to send messages via client socket
 def sendMessage(event=None):
-    try: # I added another try catch here to avoid the end of connection error
+    try: # I added another try catch here to avoid the end of connection error - DS
         clientSocket.send(str(message).encode('utf-8')) 
     except error:
         print("Bad Connection")
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     
     #loop keyboard input    
     #while connectionOpen:
-    while True:
+    while True: # changed this loop to emulate a do-while loop - DS
         
         message = input('')
         sendMessage()
