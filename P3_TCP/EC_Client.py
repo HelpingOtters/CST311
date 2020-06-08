@@ -7,26 +7,41 @@ Description: Extra Credit Assignment. This client will establish a TCP connectio
 to the server. It will then send a message to the server to be relayed to another
 client. 
 """
-# team 2
 
+
+"""
+Team 1 will write the client for the regular assignment
+
+"""
 from socket import *
 # In your command prompt, type in hostname and press enter.
 # What comes up is your computer's hostname
-
-serverName = gethostname()
+serverName = gethostname() # since it's running on one machine
 serverPort = 12000
+BUFFER = 1024
 
-clientSocket = socket(AF_INET, SOCK_STREAM)
-clientSocket.connect((serverName,serverPort))
+# Try block for connection
+try:
+    clientSocket = socket(AF_INET, SOCK_STREAM)
+    clientSocket.connect((serverName,serverPort))
 
-sentence = input('Input lowercase sentence:')
+except error:
+    print("Unable to connect")
+    exit(1)
+
+# receives message from server
+print("Waiting for other client...")
+
+# Receives handshake message from server.
+# ClientSocket will not execute until message is received
+connection_status = clientSocket.recv(BUFFER)
+
+print(connection_status.decode())
+sentence = input("Enter message to send to server: ")
 clientSocket.send(sentence.encode())
+# Accepts awk message from server 
+awk_message = clientSocket.recv(BUFFER)
+print (awk_message.decode())
 
-modifiedSentence = clientSocket.recv(1024)
-print ('From Server:', modifiedSentence.decode())
-
-clientSocket.close()
-
-
-
-
+clientSocket.close()  
+    
