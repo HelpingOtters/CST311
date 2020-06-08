@@ -23,29 +23,22 @@ connectionOpen = False
 
 # function to receive messages through client socket
 def receiveMessage():
-    global connectionOpen # I added this in (i believe) because connectionOpen was not updating before - DS
-    try:
+    global connectionOpen 
         
         while True:
-            message = (clientSocket.recv(1024)).decode() # I moved the Decode here because it wasn't properly matching up with the elif condition - DS
-            # raise_signal(SIGIO)
-
+            message = (clientSocket.recv(1024)).decode() 
             if not message:
                 break
             elif message == "Connection closed":
                 connectionOpen = False
                 print(message)
-                # raise_signal(SIGIO)
-                kill(getpid(),SIGINT) # I used this to kill the program from the OS side. The input was locking up resources. 
-                                      #  Comment out this line to see what I mean. After you see "Connection closed" hit enter to end the program (without this line of code)
-                                      # If you decided to use this line of code, then all the connectionOpen variable and anything else that uses that variable can be deleted. - DS
+                kill(getpid(),SIGINT) 
                 break
             print(message)
            
     except error:
         print("Bad Connection")
-        kill(getpid(),SIGINT) # ANOTHER FORCE KILL HERE! - DS
-
+        kill(getpid(),SIGINT) 
    
 
 # function to send messages via client socket
@@ -70,9 +63,7 @@ if __name__ == '__main__':
     receiveThread.start()
     
     #loop keyboard input    
-    #while connectionOpen:
-    while True: # changed this loop to emulate a do-while loop - DS
-        # pause()
+    while True: 
         try:
             message = input('')
             sendMessage()
