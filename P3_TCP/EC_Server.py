@@ -49,7 +49,12 @@ class ClientConnection(Thread):
 
     # Sends clients an acknowledgment message, allowing client to send message back
     def send_ack_message(self):
-        self.connection.send(self.get_ack_message().encode())
+        try:                                                                            # added another try catch block -DS
+            self.connection.send(self.get_ack_message().encode())
+        except error:
+            print("Bad Connection")
+            exit(1)
+
 
     #Sends a message to client
     def send_message(self,message):
@@ -58,7 +63,11 @@ class ClientConnection(Thread):
     def run(self):
         self.client_message = ""
         while True:
-            self.client_message = self.connection.recv(1024).decode()
+            # Added a try block so it doesn't error out when trying to send a connection to a client that is no longer connected
+            try:
+                self.client_message = self.connection.recv(1024).decode()
+            except error:
+                exit(0)
             if not self.client_message:
                 break
             if self.client_message.lower() == "bye":
@@ -68,9 +77,9 @@ class ClientConnection(Thread):
                 
             for thread in connections:
                 thread.send_message(self.client_message)
+                
 
         self.connection.close()    # close the connection and this thread is done
-
 
 # --------------------------------------- End of Class --------------------------------------- #
 
