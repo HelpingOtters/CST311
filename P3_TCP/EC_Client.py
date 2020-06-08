@@ -33,14 +33,15 @@ def receiveMessage():
             elif message == "Connection closed":
                 connectionOpen = False
                 print(message)
-                #kill(getpid(),SIGINT) # I used this to kill the program from the OS side. The input was locking up resources. 
+                kill(getpid(),SIGINT) # I used this to kill the program from the OS side. The input was locking up resources. 
                                       #  Comment out this line to see what I mean. After you see "Connection closed" hit enter to end the program (without this line of code)
                                       # If you decided to use this line of code, then all the connectionOpen variable and anything else that uses that variable can be deleted.
                 break
             print(message)
            
     except error:
-        print("Connection Closed")
+        print("Bad Connection")
+        kill(getpid(),SIGINT) # ANOTHER FORCE KILL HERE!
 
    
 
@@ -49,7 +50,7 @@ def sendMessage(event=None):
     try: # I added another try catch here to avoid the end of connection error
         clientSocket.send(str(message).encode('utf-8')) 
     except error:
-        print("Connection Terminated")
+        print("Bad Connection")
         exit(1)
 
 # run main routine
