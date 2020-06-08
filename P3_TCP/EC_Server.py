@@ -49,7 +49,7 @@ class ClientConnection(Thread):
 
     # Sends clients an acknowledgment message, allowing client to send message back
     def send_ack_message(self):
-        try:                                                                            # added another try catch block -DS
+        try:     
             self.connection.send(self.get_ack_message().encode())
         except error:
             print("Bad Connection")

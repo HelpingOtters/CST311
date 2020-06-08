@@ -24,11 +24,10 @@ connectionOpen = False
 
 # function to receive messages through client socket
 def receiveMessage():
-    global connectionOpen # I added this in (i believe) because connectionOpen was not updating before - DS
-    try:
-        
+    global connectionOpen 
+    try:   
         while True:
-            message = (clientSocket.recv(1024)).decode() # I moved the Decode here because it wasn't properly matching up with the elif condition - DS
+            message = (clientSocket.recv(1024)).decode() 
             if not message:
                 break
             elif message.lower() == "bye":
@@ -40,8 +39,7 @@ def receiveMessage():
            
     except error:
         print("Bad Connection")
-        kill(getpid(),SIGINT) # ANOTHER FORCE KILL HERE! - DS
-
+        kill(getpid(),SIGINT) 
    
 
 # function to send messages via client socket
@@ -66,8 +64,7 @@ if __name__ == '__main__':
     receiveThread.start()
     
     #loop keyboard input    
-    #while connectionOpen:
-    while True: # changed this loop to emulate a do-while loop - DS
+    while True: 
         try:
             message = input('')
             sendMessage()
