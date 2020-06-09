@@ -45,17 +45,19 @@ class ClientConnection(Thread):
             self.client_name = "Y"
             self.ack_message = "Client Y connected"
     
-    # sets the message rcvd counter
+    # sets the message rcvd counter and check if it is the first message received by server
     def set_message_counter(self):
         global message_cv
         global message_count
+        global first_client
         message_cv.acquire()  # acquire the lock to update message counter
-                
-        # If this is the first message
-        if (message_count == 0):
-            message_count = message_count + 1 
-        else:
-            message_count = message_count + 1
+        
+        message_count = message_count + 1
+        
+        # If this is the first message received, set the client be the first
+        if (message_count == 1):      
+            first_client = self.client_name
+        
         message_cv.notify()   # to notify the main thread a message is received
         message_cv.release()  # release the lock
 
@@ -80,11 +82,13 @@ class ClientConnection(Thread):
     def received_from_client(self):
         print("Client ", self.client_name, " sent message ", message_count, ": ", self.client_message)
 
-    def set_first_client(self):
-        global first_client
-        # store client_id of the client that returned the first message
-        if message_count == 1:
-            first_client = self.client_name
+# Moved this code to set_message_counter() because we need to lock the message_count
+#    and first_client global variables as well when we check or change the values
+#    def set_first_client(self):
+#        global first_client
+#        # store client_id of the client that returned the first message
+#        if message_count == 1:
+#            first_client = self.client_name
 
 
     def run(self):
@@ -97,7 +101,7 @@ class ClientConnection(Thread):
                 break
             else:
                 self.set_message_counter()
-                self.set_first_client()
+                #self.set_first_client() - it is done within set_message_counter()
                 self.received_from_client()
         self.connection.close()    # close the connection and this thread is done
 
@@ -153,6 +157,8 @@ def main():
     message_cv.acquire()
     while (message_count != 2):
         message_cv.wait() # wait for a thread's notification for any message received
+    message_cv.release()    
+    
     # broadcasts an ack to all clients
     broadcast_message = create_broadcast_msg(connections,first_client)
     send_broadcast_ack(connections,broadcast_message)
