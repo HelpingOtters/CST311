@@ -1,25 +1,28 @@
-# Names: Ricardo Barbosa, Max Halbert, Lindsey Reynolds and Dan Sedano
-# Team: 3
-# Date: 06/09/2020
-# Title: Server.py
-# Description: This is a TCP Server program that will connect to two different
-# clients simultaneously. The server will receive one message from each server 
-# and will process each message. The server will then send the messages back to
-# the correct client.
-
-# Answer to question 11 of the grading rubric:
-# 11. (25 points) Explain why you need multithreading to solve this problem. Put this in a
-# comment at the top of your server code.
-
 """
-Multiple parts of this program need to run concurrently in order to share data between threads. 
-The use of multithreading creates the illusion of multitasking since the default cpu setting of Mininet has one processor. 
-This program simultaneously executes two clients, which are both communicating with one server. 
-Because of the nature of this program, the two clients must run concurrently while communicating with the server. 
-In the main method of the server program, a while loop will continuously run in the background, waiting for clients to request connections. 
-As the server opens TCP connections with each client, it must create a new thread to run each connection. 
-Because they are all running in their own threads, each connection can then run a while loop and receive 
-transmissions from the client at the same time and thus one client doesn’t have to wait for the other one to finish running.
+    Names: Ricardo Barbosa, Max Halbert, Lindsey Reynolds and Dan Sedano
+    Team: 3
+    Date: 06/09/2020
+    Title: Server.py
+    Description: This is a TCP Server program that will connect to two different
+    clients simultaneously. The server will receive one message from each server 
+    and will process each message. The server will then send the messages back to
+    the correct client.
+
+    NOTE: To Run Please use Python3 command. This program was written and tested with Python 3.6.9 and higher.    
+
+
+    Answer to question 11 of the grading rubric:
+    11. (25 points) Explain why you need multithreading to solve this problem. Put this in a
+    comment at the top of your server code.
+
+    Multiple parts of this program need to run concurrently in order to share data between threads. 
+    The use of multithreading creates the illusion of multitasking since the default cpu setting of Mininet has one processor. 
+    This program simultaneously executes two clients, which are both communicating with one server. 
+    Because of the nature of this program, the two clients must run concurrently while communicating with the server. 
+    In the main method of the server program, a while loop will continuously run in the background, waiting for clients to request connections. 
+    As the server opens TCP connections with each client, it must create a new thread to run each connection. 
+    Because they are all running in their own threads, each connection can then run a while loop and receive 
+    transmissions from the client at the same time and thus one client doesn’t have to wait for the other one to finish running.
 
 """
 
