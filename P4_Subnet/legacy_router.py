@@ -8,6 +8,7 @@ def myNetwork():
    net = Mininet( topo=None,
    build=False,
    ipBase='10.0.0.0/8')
+
    info( '*** Adding controller\n' )
    info( '*** Add switches\n')
    r1 = net.addHost('r1', cls=Node, ip='0.0.0.0')
