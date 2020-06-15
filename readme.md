@@ -18,6 +18,15 @@
 * Send message to server for processing then back to client
 
 ## [Program 3: TCP Multi-Client Server](/P3_TCP)
+
 ### Objectives
+
 * Create a TCP Server program with multiple connections
 * Use multi-threading to handle multiple connections
+
+## [Program 4: Subnet Addressing in Mininet]
+
+###
+
+* To analyze a given script and correcting the network design allowing for hosts 1 and 2 to ping one another, respectively
+* Drawing network diagrams showing IPs of all interfaces
